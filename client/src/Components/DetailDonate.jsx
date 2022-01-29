@@ -4,7 +4,6 @@ import DonateModal from './DonateModal'
 let FILE_PATH = 'http://localhost:5000/uploads/'
 
 function DetailDonate(props) {
-    // console.log(props)
     return (
         <div>
             <Container className='view-fund my-5'>
@@ -18,7 +17,7 @@ function DetailDonate(props) {
                         </div>
                         <div className="progress-money progres d-flex justify-content-between mt-5 mb-2 ">
                             <div className="money-start">
-                                <h5>Rp 25.000.00 </h5>
+                                <h5>{ props.totalDonate }</h5>
                             </div>
                             <div className='d-flex align-items-end'>
                                 <p className="">Gathered From</p>
@@ -34,7 +33,7 @@ function DetailDonate(props) {
 
                         <div className="progress-count d-flex justify-content-between mt-3 mb-5">
                             <div className="count-start d-flex">
-                                <h5>200</h5>
+                                <h5>{props.totalDonatur}</h5>
                                 <p className='d-flex align-items-end'> Donation</p>
                             </div>
                             <div className="money-end d-flex">

@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import { Container, Row, Col } from 'react-bootstrap'
-// import { Route , withRouter} from 'react-router-dom';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import { API } from "../config/api";
 import Card from './CardList'
@@ -9,6 +8,11 @@ import Card from './CardList'
 function ListDonation() {
     const [funds, setFunds] = useState([]);
     let history = useHistory();
+
+    const useName = () => {
+        const location = useLocation();
+        return location.pathname;
+    }
 
     const getFunds = async () => {
         try {
@@ -24,11 +28,11 @@ function ListDonation() {
         getFunds();
     }, []);
 
-    const handleDetail = (id) => {
-        history.push({
-            pathname: `detaildonations/${funds.id}`
-        })
-    }
+    // const handleDelete = (id) => {
+    //     console.log(id)
+    //     history.push(`/formupdate/${id}`)
+    //     // <Link to={`/viewfund/${id}`} />
+    // }
 
     return (
         <Container id="list-donation-scroll" className='list-donation'>
@@ -47,10 +51,13 @@ function ListDonation() {
                                     thumbnail={funds.thumbnail}
                                     description= {funds.description}
                                     money={funds.goal}
-                                    goDetail={() => history.push(`/detaildonations/${funds.id}`)}
-                                    buttonName="Donate Now"
-                                    remove={""}
+                                    goDetail={
+                                        // () => history.push(`/detaildonations/${funds.id}`)
+                                         () => history.push(`/detaildonations/${funds.id}`)
 
+                                    }
+                                    buttonName="Donate Now"
+                                    // remove= {handleDelete(funds.id)}
                                 />
                             </Col>
                         )

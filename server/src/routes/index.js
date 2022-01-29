@@ -10,7 +10,8 @@ const {
     getUser,
     updateUser,
     getUsersByPayment,
-    editUserDonate
+    editUserDonate,
+    getUsersByPaymentOne
 } = require("../controllers/user");
 
 const {
@@ -51,6 +52,7 @@ router.delete("/deleteuser/:id", deleteUser);
 
 router.put("/edituserdonate/:fundId/:userId", editUserDonate); //req done
 router.get("/getpaymentusers", getUsersByPayment); //
+router.get("/getpaymentusersone/:id", getUsersByPaymentOne); //
 
 // route Fund
 router.post("/addfund", uploadFile("image"), addFund); //req done

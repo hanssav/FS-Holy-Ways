@@ -2,7 +2,7 @@
   "development": {
     "username": "root",
     "password": null,
-    "database": "holy_ways",
+    "database": "socket_io_holly_ways",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },

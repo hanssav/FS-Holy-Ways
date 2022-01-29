@@ -11,16 +11,16 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-        fund.belongsToMany(models.User, {
+        fund.belongsToMany(models.user, {
             as: "userDonate",
             through: {
-                model: "Payment",
+                model: "payment",
                 as: "payment"
             },
             foreignKey: "fundId"
         })
 
-        fund.hasMany(models.Payment, {
+        fund.hasMany(models.payment, {
             as: "payment",
             foreignKey: {
                 name: "fundId"
@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
     // paymentId: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'Fund',
+    modelName: 'fund',
   });
   return fund;
 };

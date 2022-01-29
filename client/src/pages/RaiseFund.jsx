@@ -1,16 +1,21 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import { Container, Row, Col, Button} from 'react-bootstrap'
 import { Link } from "react-router-dom";
 import { useHistory } from 'react-router-dom';
+
+import { UserContext } from '../context/UserContext'
 
 import Header from '../Components/Header'
 import Card from '../Components/CardList'
 import { API } from "../config/api";
 import DeleteModal from '../Components/deleteModal';
+import ButtonEditDelete from '../Components/ButtonEditDelete';
 
 function RaiseFund() {
     let history = useHistory();
     const [funds, setFunds] = useState([]);
+    const [state] = useContext(UserContext)
+    // console.log(state.user.id)
 
     const [idDelete, setIdDelete] = useState(null)
     const [confirmDelete, setConfirmDelete] = useState(null)
@@ -57,10 +62,14 @@ function RaiseFund() {
     }, [confirmDelete])
 
     const handleDetail = (id) => {
+        console.log(id)
         history.push(`/viewfund/${id}`)
         // <Link to={`/viewfund/${id}`} />
     }
 
+    const handleEdit = (id) => {
+        history.push(`/formupdate/${id}`)
+    }
 
     return (
         <div>
@@ -78,8 +87,35 @@ function RaiseFund() {
                 </Row>
 
                 <Row>
-                    {
+                    {state.user.status === "user" ? (
+                        funds.filter(funds => funds.adminId === state.user.id)
+                        .map(funds => {
+                            // console.log(funds)
+                            return (
+                                <Col className="md-4">
+                                    <Card
+                                        id={funds.id}
+                                        title={funds.title}
+                                        thumbnail={funds.thumbnail}
+                                        description={funds.description}
+                                        money={funds.goal}
+                                        goDetail = {handleDetail(funds.id)}
+                                        buttonName="View Fund"
+                                        remove={() => handleDelete(funds.id)}
+                                    >
+                                        {state.isLogin ? (
+                                            <ButtonEditDelete remove={() => handleDelete(funds.id)} edit={ () => handleEdit(funds.id) }/>
+                                        ) : (
+                                                <div></div>
+                                            )
+                                        }
+                                    </Card>
+                                </Col>
+                            )
+                        })
+                    ) : (
                         funds.map(funds => {
+                            // console.log(funds)
                             return (
                                 <Col className="md-4">
                                     <Card
@@ -90,12 +126,18 @@ function RaiseFund() {
                                         money={funds.goal}
                                         goDetail = {handleDetail}
                                         buttonName="View Fund"
-                                        remove={() => { handleDelete(funds.id) }}
-                                    />
+                                    >
+                                    </Card>
+                                    {state.isLogin ? (
+                                        <ButtonEditDelete remove={() => handleDelete(funds.id)} edit={ () => handleEdit(funds.id) }/>
+                                    ) : (
+                                            <div></div>
+                                        )
+                                    }
                                 </Col>
                             )
                         })
-                    }
+                    )};
                 </Row>
             </Container>
             <DeleteModal setConfirmDelete={setConfirmDelete} show={show} handleClose={handleClose} />

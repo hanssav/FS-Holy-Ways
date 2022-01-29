@@ -11,18 +11,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
 
-        payment.belongsTo(models.User,
-            // mappedBy = "Payment.fundId",
-            // cascade = CascadeType.ALL,
-            // optional = false,
-            {
+        payment.belongsTo(models.user, {
             as: "user",
             foreignKey: {
                 name: "userId"
             }
         })
 
-        payment.belongsTo(models.Fund, {
+        payment.belongsTo(models.fund, {
             as: "fund",
             foreignKey: {
                 name: "fundId"
@@ -39,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
 
   }, {
     sequelize,
-    modelName: 'Payment',
+    modelName: 'payment',
   });
   return payment;
 };

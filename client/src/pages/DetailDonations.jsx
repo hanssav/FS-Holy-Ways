@@ -9,6 +9,8 @@ function DetailDonations(props) {
 
     const [fund, setFund] = useState([]);
     const [userDonate, setUserDonate] = useState([]);
+    const [paymentApproved, setPaymentApproved] = useState(null)
+    const [totalDonate, setTotalDonate] = useState()
 
     const getFund = async () => {
         try {
@@ -17,7 +19,22 @@ function DetailDonations(props) {
             const response = await API.get(`/getfundsuserdonateone/${id}`);
             setFund(response.data.data)
             setUserDonate(response.data.data.userDonate)
-            // console.log(response.data.data.userDonate[0].fullName)
+
+            console.log(response)
+
+            const paymentApproved = response.data.data.userDonate.filter(e => e.payment.status === "success")
+            setPaymentApproved(paymentApproved.length)
+            // console.log(paymentApproved)
+
+            // console.log(paymentApproved.length)
+
+            const price = paymentApproved.map(price => {
+                return price.payment.donateAmount
+            })
+            .reduce((previousPrice, currentPrice) => previousPrice + currentPrice, 0);
+            setTotalDonate(price)
+
+            console.log(price)
         } catch (error) {
             console.log(error)
         }
@@ -34,6 +51,7 @@ function DetailDonations(props) {
         return [d[0], d[1], d[2], d[3]].join(' ');
     }
 
+    // console.log(fund)
     return (
         <div>
             <Header />
@@ -42,12 +60,14 @@ function DetailDonations(props) {
                 title={fund.title}
                 thumbnail={fund.thumbnail}
                 goal={fund.goal}
-                description = {fund.description}
+                description={fund.description}
+                totalDonatur={paymentApproved}
+                totalDonate={totalDonate}
             />
             <Container>
                 <Row className='list-not-aproved mt-5'>
                     <div className="title">
-                        <h3>List Donations (10)</h3>
+                        <h3>List Donations ({paymentApproved})</h3>
                     </div>
                     <div className="card-list">
                         {

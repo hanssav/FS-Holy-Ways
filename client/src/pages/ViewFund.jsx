@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react'
 import { Row, Container } from 'react-bootstrap'
-import { useHistory } from 'react-router-dom'
+// import { useHistory } from 'react-router-dom'
 
 import Header from '../Components/Header'
 import DetailDonate from '../Components/DetailDonate'
@@ -11,13 +11,15 @@ import { UserContext } from '../context/UserContext'
 import { API } from "../config/api"
 
 function ViewFund(props) {
-    let history = useHistory();
-    const [state, dispatch] = useContext(UserContext)
+    const [state] = useContext(UserContext)
 
     const [fund, setFund] = useState([]);
     const [userDonate, setUserDonate] = useState([]);
     const [idUser, setIdUser] = useState(null)
     const [confirmApprove, setConfirmApprove] = useState(null)
+    const [paymentApproved, setPaymentApproved] = useState(null)
+    const [paymentNotApproved, setpaymentNotApproved] = useState(null)
+    const [totalDonate, setTotalDonate] = useState()
 
     const [show, setShow] = useState(false)
     const handleShow = () => setShow(true)
@@ -26,21 +28,11 @@ function ViewFund(props) {
     const [form, setForm] = useState({
         status: ""
     })
-    console.log(state)
 
     const handleApprove = (id) => {
-        // console.log("user Id :",id)
         setIdUser(id)
         handleShow()
     }
-
-    const handleChange = (e) => {
-        setForm({
-          ...form,
-            [e.target.name]: e.target.value,
-        });
-    };
-    // console.log("user Id :", idUser)
 
     const updateStatus = async (id) => {
         // console.log("fundId", fund.id)
@@ -87,7 +79,23 @@ function ViewFund(props) {
             const response = await API.get(`/getfundsuserdonateone/${id}`);
             setFund(response.data.data)
             setUserDonate(response.data.data.userDonate)
-            // console.log(response.data.data)
+
+            const paymentApproved = response.data.data.userDonate.filter(e => e.payment.status === "success")
+            setPaymentApproved(paymentApproved.length)
+            // console.log(paymentApproved)
+
+            const paymentNotApproved = response.data.data.userDonate.filter(e => e.payment.status === "pending")
+            setpaymentNotApproved(paymentNotApproved.length)
+            // console.log(paymentApproved.length)
+
+            const price = paymentApproved.map(price => {
+                return price.payment.donateAmount
+            })
+            .reduce((previousPrice, currentPrice) => previousPrice + currentPrice, 0);
+            setTotalDonate(price)
+
+            console.log(price)
+
         } catch (error) {
             console.log(error)
         }
@@ -112,17 +120,21 @@ function ViewFund(props) {
                 title={fund.title}
                 thumbnail={fund.thumbnail}
                 goal={fund.goal}
-                description = {fund.description}
+                description={fund.description}
+                totalDonatur={paymentApproved}
+                totalDonate={totalDonate}
             />
             <Container>
                 <Row className='list-not-aproved mt-5'>
                     <div className="title">
-                        <h3>List Donations (10)</h3>
+                        <h3>List Donations ({paymentApproved})</h3>
                     </div>
                     <div className="card-list">
                         {
                             userDonate.filter(e => e.payment.status === "success")
                                 .map((e) => {
+                                    // console.log(userDonate.length)
+                                    // console.log(e.payment.donateAmount)
                                     return (
                                         <CardDonatur
                                             id={e.id}
@@ -142,13 +154,13 @@ function ViewFund(props) {
                 {state.user.status === "admin" ? (
                     <Row className='list-not-aproved mt-5'>
                         <div className="title">
-                            <h3>Donation has not been approved (10)</h3>
+                            <h3>Donation has not been approved ({paymentNotApproved})</h3>
                         </div>
                         <div className="card-list">
                             {
                                 userDonate.filter(e => e.payment.status === "pending")
                                     .map((e) => {
-                                        console.log(e)
+                                        // console.log(e.payment.donateAmount)
                                         return (
                                             <CardDonatur
                                                 id={e.id}

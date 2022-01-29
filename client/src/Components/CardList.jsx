@@ -26,17 +26,8 @@ function Login() {
 
 
 function CardList(props) {
-
     const [state] = useContext(UserContext)
-    // console.log(state.user.status)
     let history = useHistory();
-
-    // const handleEdit = (id) => {
-    //     history.push({
-    //         pathname: `/formfund/${id}`
-    //     })
-    //     // <Link to="/viewfund/"id ></Link>
-    // }
 
     return (
         <Card id={props.id} className="card-style mt-4 mb-2" style={{ width: '25rem' }}>
@@ -68,23 +59,6 @@ function CardList(props) {
                             )}
                         </Card.Text>
                 </Card.Text>
-                {state.user.status === "admin" ? (
-                <Card.Text className="group-btn d-flex justify-content-end">
-                    <Card.Text >
-                            <div className='button d-flex justify-content-end mb-4' style={{ width: '25rem' }}>
-                                <div className="div btn-edit mx-2">
-                                    <Button onClick={() => { history.push(`/formupdate/${props.id}`) } }variant="success">edit</Button>
-                                </div>
-                                <div className="div btn-delete">
-                                    <Button onClick={() => props.remove(props.id) } variant="danger">delete</Button>
-                                </div>
-                            </div>
-                        </Card.Text>
-                </Card.Text>
-                    ) : (
-                        <div></div>
-                    )}
-
             </Card.Body>
         </Card>
     )

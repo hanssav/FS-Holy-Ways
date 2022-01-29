@@ -11,22 +11,35 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
 
-        user.hasMany(models.Payment, {
+        user.hasMany(models.payment, {
             as: "payment",
             foreignKey: {
                 name: "userId"
             }
         })
 
-        user.belongsToMany(models.Fund, {
-            as: "Fund",
+        user.belongsToMany(models.fund, {
+            as: "fund",
             through: {
-                model: "Payment",
+                model: "payments",
                 as: "payment"
             },
             foreignKey: "userId",
             // foreignKey: "userId"
         })
+
+        user.hasMany(models.chat, {
+            as: "senderMessage",
+            foreignKey: {
+            name: "idSender",
+            },
+        });
+        user.hasMany(models.chat, {
+            as: "recipientMessage",
+            foreignKey: {
+            name: "idRecipient",
+            },
+        });
     }
   };
   user.init({
@@ -36,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
     status: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'User',
+    modelName: 'user',
   });
   return user;
 };

@@ -1,4 +1,4 @@
-const { Payment, User, Fund } = require("../../models")
+const { payment, user, fund } = require("../../models")
 
 exports.addDonate = async (req, res) => {
     try {
@@ -6,7 +6,7 @@ exports.addDonate = async (req, res) => {
         const { ...data } = req.body
         // return res.send(data)
 
-        const createDonate = await Payment.create({
+        const createDonate = await payment.create({
             ...data,
             proofAttachment: req.file.filename,
         })
@@ -33,9 +33,9 @@ exports.addDonate = async (req, res) => {
 
 exports.getDonates = async (req, res) => {
     try {
-        const showDonate = await Payment.findAll({
+        const showDonate = await payment.findAll({
             attributes: {
-                exclude: ['userId', 'fundId' ,'createdAt', 'updatedAt']
+                exclude: ['fundId' ,'createdAt', 'updatedAt']
             }
         })
 
@@ -55,7 +55,7 @@ exports.getDonates = async (req, res) => {
 
 exports.getDonateFund = async (req, res) => {
     try {
-        const showDonate = await Payment.findAll({
+        const showDonate = await payment.findAll({
             include: {
                 model: Fund,
                 as: "fund",
@@ -87,7 +87,7 @@ exports.getDonate = async(req, res) => {
     try {
         const { id } = req.params
 
-        const dataDonate = await Payment.findOne({
+        const dataDonate = await payment.findOne({
             where: {
                 id
             },
@@ -113,7 +113,7 @@ exports.deleteDonate = async (req, res) => {
     try {
         const {id} = req.params
 
-        await Payment.destroy({
+        await payment.destroy({
             where: {
                 id
             }
@@ -137,7 +137,7 @@ exports.updateDonate = async (req, res) => {
         const { id } = req.params
         const newDonate = req.body
 
-        await Payment.update(newDonate, {
+        await payment.update(newDonate, {
             where: {
                 id
             }

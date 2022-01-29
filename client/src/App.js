@@ -17,6 +17,8 @@ import DetailDonations from "./pages/DetailDonations";
 import FormFund from "./pages/FormFund";
 import FormUpdate from "./pages/FormUpdate";
 import ViewFund from "./pages/ViewFund";
+import ChatClient from "./pages/ChatClient";
+import ChatAdmin from "./pages/ChatAdmin";
 
 import { API, setAuthToken } from "./config/api"
 
@@ -84,12 +86,15 @@ function App() {
             <Route exact path="/login" component={Login} />
             <Route exact path="/register" component={Register} />
             <PrivateRoute exact path="/user" component={User} />
-            <PrivateRoute exact path="/raisefund" component={RaiseFund} />
-            <Route exact path="/detaildonations/:id" component={DetailDonations} />
+            <Route exact path="/raisefund" component={RaiseFund} />
+            <PrivateRoute exact path="/detaildonations/:id" component={DetailDonations} />
             <PrivateRoute exact path="/formfund" component={FormFund} />
-            <PrivateRoute exact path="/formupdate/:id" component={FormUpdate} />
             <PrivateRoute exact path="/formfund/:id" component={FormFund} />
-            <Route exact path="/viewfund/:id" component={ViewFund} />
+            <PrivateRoute exact path="/formupdate/:id" component={FormUpdate} />
+            <PrivateRoute exact path="/viewfund/:id" component={ViewFund} />
+            <Route exact path="/chatadmin" component={ChatAdmin} />
+            <Route exact path="/chatclient" component={ChatClient} />
+
         </Switch>
     </Router>
 

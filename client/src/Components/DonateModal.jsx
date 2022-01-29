@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext} from 'react'
 import {useHistory, useParams} from "react-router-dom"
 import { Button, Modal, Form, Image } from 'react-bootstrap'
 
@@ -11,10 +11,7 @@ function MyVerticallyCenteredModal(props) {
     let history = useHistory();
     const { id } = useParams();
     const [preview, setPreview] = useState(null);
-    const [state, dispatch] = useContext(UserContext)
-
-    // console.log("userId", state.user.id)
-    // console.log("fundId: ", id)
+    const [state] = useContext(UserContext)
 
     const [form, setForm] = useState({
         donateAmount: "",
@@ -122,7 +119,7 @@ function MyVerticallyCenteredModal(props) {
     const [modalShow, setModalShow] = useState(false);
 
     return (
-        <>
+        <div>
             <div className="d-grid gap-2 my-5">
                 <Button onClick={() => setModalShow(true)} variant="danger" size='lg'>Donate</Button>
             </div>
@@ -131,7 +128,7 @@ function MyVerticallyCenteredModal(props) {
           show={modalShow}
           onHide={() => setModalShow(false)}
         />
-      </>
+      </div>
     );
   }
 

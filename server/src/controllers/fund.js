@@ -1,4 +1,4 @@
-const { Fund, Payment, User } = require("../../models");
+const { fund, payment, user } = require("../../models");
 const fs = require('fs');
 
 let FILE_PATH = 'http://localhost:5000/uploads/'
@@ -6,25 +6,26 @@ let PATH_DELETE = '../BE Holy Ways/uploads/'
 
 exports.getFundsUserDonate = async (req, res) => {
     try {
-        let data = await Fund.findAll({
+        let data = await fund.findAll({
             include: [
-                { model: User,
-                as: "userDonate",
-                    attributes: {
-                    exclude: ["password", "status", "createdAt", "updatedAt"]
-                },
-                through: {
-                    model: Payment,
-                    as: "payment",
-                    attributes: {
-                        exclude: [ "createdAt", "updatedAt"]
+                {
+                    model: user,
+                    as: "userDonate",
+                        attributes: {
+                        exclude: ["password", "status", "createdAt", "updatedAt"]
+                    },
+                    through: {
+                        model: payment,
+                        as: "payment",
+                        attributes: {
+                            exclude: [ "createdAt", "updatedAt"]
+                        }
+                        // "userId","fundId",
                     }
-                    // "userId","fundId",
-                }
                 }
             ],
             attributes: {
-                exclude: ['adminId', 'updatedAt', "createdAt"]
+                exclude: ['updatedAt', "createdAt"]
             }
         })
 
@@ -45,7 +46,7 @@ exports.getFundsUserDonate = async (req, res) => {
         })
 
     } catch (error) {
-        // console.log(error)
+        console.log(error)
         res.status(500).send({
             status: "failed",
             message: "server error"
@@ -57,13 +58,13 @@ exports.getFundsUserDonateOne = async (req, res) => {
     try {
         const { id } = req.params
 
-        const data = await Fund.findOne({
+        const data = await fund.findOne({
             include: {
                 id,
-                model: User,
+                model: user,
                 as: "userDonate",
                 through: {
-                    model: Payment,
+                    model: payment,
                     as: "payment",
                     attributes: {
                         exclude: ["userId", "fundId", "updatedAt"]
@@ -88,7 +89,7 @@ exports.getFundsUserDonateOne = async (req, res) => {
         })
 
     } catch (error) {
-        // console.log(error)
+        console.log(error)
         res.status(500).send({
             status: "failed",
             message: "server error"
@@ -100,7 +101,7 @@ exports.addFund = async(req, res) => {
     try {
         const { ...dataFund } = req.body
 
-        const createFund = await Fund.create({
+        const createFund = await fund.create({
             ...dataFund,
             thumbnail: req.file.filename,
             // userId: req.user.id
@@ -118,7 +119,7 @@ exports.addFund = async(req, res) => {
         })
 
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         res.status(500).send({
             status: "failed",
             message: 'Server Error'
@@ -137,14 +138,14 @@ exports.updateFund = async (req, res) => {
             thumbnail: req?.file?.filename,
         };
 
-        await Fund.update(data, {
+        await fund.update(data, {
             where: {
                 id
             }
         })
 
         // try to delete data image
-        const findData = await Fund.findOne({
+        const findData = await fund.findOne({
             where: {
                 id
             }
@@ -161,9 +162,9 @@ exports.updateFund = async (req, res) => {
         }
 
         // show data after update
-        let update = await Fund.findOne({
+        let update = await fund.findOne({
             include: {
-                model: User,
+                model: user,
                 as: "userDonate",
                 through: {
                     model: Payment,
@@ -193,7 +194,7 @@ exports.updateFund = async (req, res) => {
         // fundData = JSON.parse(JSON.stringify(fundData))
 
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         res.status(500).send({
             status: "failed",
             message: 'Server Error'
@@ -205,7 +206,7 @@ exports.deleteFund = async (req, res) => {
     try {
         const {id} = req.params
 
-        const data = await Fund.findOne({
+        const data = await fund.findOne({
             where: {
                 id
             }
@@ -221,14 +222,14 @@ exports.deleteFund = async (req, res) => {
             })
         }
         if (data) {
-            await Fund.destroy({
+            await fund.destroy({
                 where: {
                     id
                 }
             })
         }
 
-        const updateData = await Fund.findAll()
+        const updateData = await fund.findAll()
 
         res.status(200).send({
             status: "success",
@@ -237,7 +238,7 @@ exports.deleteFund = async (req, res) => {
         })
 
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         res.status(500).send({
             status: "failed",
             message: "server error"

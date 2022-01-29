@@ -1,15 +1,10 @@
-const { User } = require("../../models")
-
 const Joi = require("joi")
-
 const bcrypt = require("bcrypt")
-
 const jwt = require("jsonwebtoken")
 
-// const dotenv = require("dotenv")
-// dotenv.config();
+const { user } = require("../../models")
 
-exports.register = async(req, res) => {
+exports.register = async (req, res) => {
     try {
         const data = req.body
 
@@ -33,14 +28,14 @@ exports.register = async(req, res) => {
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(req.body.password, salt)
 
-        await User.create({
+        await user.create({
             fullName: data.fullname,
             email: data.email,
             password: hashedPassword,
             status: "user"
         })
 
-        const token = jwt.sign({ id: User.id }, process.env.TOKEN_KEY)
+        const token = jwt.sign({ id: user.id }, process.env.TOKEN_KEY)
 
         res.status(201).send({
             status: "success",
@@ -79,7 +74,7 @@ exports.login = async(req, res) => {
     }
 
     try {
-        const userExist = await User.findOne({
+        const userExist = await user.findOne({
             where: {
                 email: data.email
             },
@@ -97,7 +92,7 @@ exports.login = async(req, res) => {
             })
         }
 
-        const token = jwt.sign({ id: User.id }, process.env.TOKEN_KEY)
+        const token = jwt.sign({ id: user.id }, process.env.TOKEN_KEY)
 
         res.status(200).send({
             status: "success",
@@ -107,7 +102,7 @@ exports.login = async(req, res) => {
                 email: userExist.email,
                 status: userExist.status,
                 token,
-                idToken: User.id
+                idToken: user.id
             }
         })
 
@@ -121,39 +116,41 @@ exports.login = async(req, res) => {
 }
 
 exports.checkAuth = async (req, res) => {
-  try {
-      const id = req.user.id;
-      
-      const dataUser = await User.findOne({
-          where: {
-              id,
-          },
-          attributes: {
-              exclude: ["createdAt", "updatedAt", "password"],
-          },
-      });
-      if (!dataUser) {
-          return res.status(404).send({
-              status: "failed",
-          });
-      }
+    try {
+        const id = req.user.id;
 
-    res.send({
-      status: "success...",
-      data: {
-        user: {
-          id: dataUser.id,
-          name: dataUser.name,
-          email: dataUser.email,
-          status: dataUser.status,
-        },
-      },
-    });
-  } catch (error) {
-    console.log(error);
-    res.status({
-      status: "failed",
-      message: "Server Error",
-    });
-  }
+        const dataUser = await user.findOne({
+            where: {
+                id,
+            },
+            attributes: {
+                exclude: ["createdAt", "updatedAt", "password"],
+            },
+        });
+
+        if (!dataUser) {
+            return res.status(404).send({
+                status: "failed",
+            });
+        }
+
+        res.send({
+            status: "success...",
+            data: {
+                user: {
+                    id: dataUser.id,
+                    name: dataUser.name,
+                    email: dataUser.email,
+                    status: dataUser.status,
+                },
+            },
+        });
+
+    } catch (error) {
+        // console.log(error);
+        res.status({
+            status: "failed",
+            message: "Server Error",
+        });
+    }
 };

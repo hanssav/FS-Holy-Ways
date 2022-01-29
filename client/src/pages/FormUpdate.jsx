@@ -25,7 +25,7 @@ function FormUpdate() {
     })
 
     const getFund = async (id) => {
-        // console.log(id)
+        console.log(id)
         try {
             const response = await API.get(`/getfundsuserdonateone/${id}`)
             setPreview(FILE_PATH + response.data.data.thumbnail)

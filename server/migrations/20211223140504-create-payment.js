@@ -25,7 +25,7 @@ module.exports = {
         },
         onUpdate: "CASCADE",
         onDelete: "CASCADE"
-      },    
+      },
       fundId: {
         type: Sequelize.INTEGER,
         references: {
